@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% load static %}
+    <title>
+      {% block title %}
+        Generic SaaS
+      {% endblock %}
+    </title>
+    <link rel="stylesheet" href="{% static 'css/dist/styles.css' %}" />
+  </head>
+
+  <body class="min-h-screen bg-slate-950 text-slate-100">
+    <div class="min-h-screen lg:flex">
+      {% if user.is_authenticated %}
+        <!-- Mobile Top Bar -->
+        <header class="lg:hidden sticky top-0 z-40 border-b border-slate-800 bg-slate-950/80 backdrop-blur">
+          <div class="px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="h-9 w-9 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-sm font-semibold">GS</div>
+              <div class="leading-tight">
+                <div class="text-sm font-semibold">
+                  {% if user.workspace %}
+                    {{ user.workspace.name }}
+                  {% else %}
+                    Workspace
+                  {% endif %}
+                </div>
+                <div class="text-xs text-slate-400">Generic SaaS</div>
+              </div>
+            </div>
+
+            <form method="post" action="{% url 'logout' %}" class="shrink-0">
+              {% csrf_token %}
+              <button class="inline-flex items-center rounded-xl border border-slate-800 bg-slate-900 px-3 py-2 text-xs font-semibold text-slate-100 hover:bg-slate-800 transition">Logout</button>
+            </form>
+          </div>
+        </header>
+
+        <!-- Sidebar -->
+        <aside class="hidden lg:flex lg:w-64 lg:flex-col lg:shrink-0 border-r border-slate-800 bg-slate-950">
+          <div class="px-5 py-6">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-sm font-semibold">GS</div>
+              <div>
+                <div class="text-sm font-semibold">
+                  {% if user.workspace %}
+                    {{ user.workspace.name }}
+                  {% else %}
+                    Workspace
+                  {% endif %}
+                </div>
+                <div class="text-xs text-slate-400">Control layer</div>
+              </div>
+            </div>
+
+            <nav class="mt-6 space-y-1">
+              <a href="{% url 'dashboard' %}" class="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-slate-300 hover:bg-slate-900 hover:text-white transition">
+                <span class="h-2 w-2 rounded-full bg-slate-600"></span>
+                Dashboard
+              </a>
+
+              <a href="{% url 'project_list' %}" class="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-slate-300 hover:bg-slate-900 hover:text-white transition">
+                <span class="h-2 w-2 rounded-full bg-slate-600"></span>
+                Projects
+              </a>
+
+              <a href="{% url 'flow-board' %}" class="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-slate-300 hover:bg-slate-900 hover:text-white transition">
+                <span class="h-2 w-2 rounded-full bg-slate-600"></span>
+                Flow Board
+              </a>
+            </nav>
+          </div>
+
+          <div class="mt-auto px-5 py-6 border-t border-slate-800">
+            <form method="post" action="{% url 'logout' %}">
+              {% csrf_token %}
+              <button class="w-full inline-flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-500 transition">Logout</button>
+            </form>
+          </div>
+        </aside>
+      {% endif %}
+
+        <main class="flex-1 {% if user.is_authenticated %}
+            px-4 py-6 sm:px-8
+          {% else %}
+            flex justify-center px-4 pt-10 sm:pt-14
+          {% endif %}">
+          {% if user.is_authenticated %}
+            <!-- Page header row (desktop) -->
+            <div class="mb-6 hidden lg:flex items-start justify-between gap-4">
+              <div>
+                {% block page_title %}
+                {% endblock %}
+              </div>
+
+              <form method="post" action="{% url 'logout' %}" class="shrink-0">
+                {% csrf_token %}
+                <button class="inline-flex items-center rounded-xl border border-slate-800 bg-slate-900 px-4 py-2 text-sm font-semibold text-slate-100 hover:bg-slate-800 transition">Logout</button>
+              </form>
+            </div>
+          {% endif %}
+
+          {% if messages %}
+            <div class="{% if not user.is_authenticated %}mx-auto w-full max-w-md{% endif %} mb-6 space-y-3">
+              {% for message in messages %}
+                <div class="rounded-2xl border px-4 py-3 text-sm
+                  {% if message.tags == 'success' %}
+                    
+                    bg-emerald-950/40 border-emerald-900 text-emerald-200
+
+                  {% elif message.tags == 'error' %}
+                    
+                    bg-rose-950/40 border-rose-900 text-rose-200
+
+                  {% else %}
+                    
+                    bg-slate-900 border-slate-800 text-slate-200
+
+                  {% endif %}">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          {% block content %}
+          {% endblock %}
+        </main>
+    </div>
+  </body>
+</html>

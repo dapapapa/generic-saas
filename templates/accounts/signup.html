@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Create Account | Generic SaaS{% endblock %}
+
+{% block content %}
+  <div class="mx-auto w-full max-w-md pt-2">
+    <div class="rounded-2xl border border-slate-800 bg-slate-900 p-10 shadow-xl">
+      <div class="mb-6 text-center">
+        <h1 class="text-2xl font-semibold text-slate-100">Create account</h1>
+        <p class="mt-2 text-sm text-slate-400">Set up your Generic SaaS workspace</p>
+      </div>
+
+      <form method="post" class="space-y-5">
+        {% csrf_token %}
+
+        {% for field in form %}
+          <div>
+            <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-slate-300">
+              {{ field.label }}
+            </label>
+            {{ field }}
+            {% if field.help_text %}
+              <div class="mt-2 text-xs text-slate-500">{{ field.help_text|safe }}</div>
+            {% endif %}
+            {% for error in field.errors %}
+              <p class="mt-2 text-xs text-rose-300">{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endfor %}
+
+        {% if form.non_field_errors %}
+          <div class="rounded-xl border border-rose-900/60 bg-rose-950/30 p-3 text-sm text-rose-200">
+            {% for error in form.non_field_errors %}
+              <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <button
+          type="submit"
+          class="w-full rounded-xl bg-indigo-600 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500"
+        >
+          Sign up
+        </button>
+      </form>
+
+      <p class="mt-6 text-center text-sm text-slate-400">
+        Already have an account?
+        <a href="{% url 'login' %}" class="font-medium text-indigo-300 hover:text-indigo-200">Sign in</a>
+      </p>
+    </div>
+  </div>
+{% endblock %}

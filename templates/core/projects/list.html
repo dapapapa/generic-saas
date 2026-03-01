@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Projects{% endblock %}
+
+{% block page_title %}
+  <div class="flex items-center gap-3">
+    <h1 class="text-2xl font-semibold tracking-tight text-slate-100">Projects</h1>
+    <a href="{% url 'project_create' %}" class="inline-flex rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-500">
+      + New Project
+    </a>
+  </div>
+{% endblock %}
+
+{% block content %}
+  {% if projects %}
+    <ul class="space-y-3">
+      {% for p in projects %}
+        <li class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-800 bg-slate-900 px-4 py-3 shadow-sm">
+          <strong class="text-slate-100">{{ p.name }}</strong>
+          <span class="flex gap-3 text-sm">
+            <a href="{% url 'project_update' p.pk %}" class="font-medium text-indigo-300 hover:text-indigo-200">Edit</a>
+            <a href="{% url 'project_delete' p.pk %}" class="font-medium text-rose-300 hover:text-rose-200">Delete</a>
+          </span>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="rounded-xl border border-dashed border-slate-700 bg-slate-900 p-4 text-slate-400">No projects yet.</p>
+  {% endif %}
+{% endblock %}

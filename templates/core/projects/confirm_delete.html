@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Delete project{% endblock %}
+
+{% block page_title %}
+  <h1 class="text-2xl font-semibold tracking-tight text-slate-100">Delete project</h1>
+{% endblock %}
+
+{% block content %}
+  <div class="max-w-xl rounded-2xl border border-rose-900/50 bg-slate-900 p-6 shadow-xl">
+    <p class="text-slate-300">
+      Are you sure you want to delete
+      <strong class="text-slate-100">{{ project.name }}</strong>?
+    </p>
+
+    <form method="post" class="mt-4 flex items-center gap-3">
+      {% csrf_token %}
+      <button type="submit" class="inline-flex rounded-xl bg-rose-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-rose-500">
+        Yes, delete
+      </button>
+      <a href="{% url 'project_list' %}" class="text-sm font-medium text-slate-300 hover:text-slate-100">Cancel</a>
+    </form>
+  </div>
+{% endblock %}

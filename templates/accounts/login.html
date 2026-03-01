@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Login | Generic SaaS
+{% endblock %}
+
+{% block content %}
+  <div class="mx-auto w-full max-w-md pt-2">
+    <div class="rounded-2xl border border-slate-800 bg-slate-900 p-10 shadow-xl">
+      <div class="mb-6 text-center">
+        <h1 class="text-2xl font-semibold text-slate-100">Sign in</h1>
+        <p class="mt-2 text-sm text-slate-400">Access your Generic SaaS workspace</p>
+      </div>
+
+      {% if form.errors %}
+        <div class="mb-6 rounded-xl border border-rose-900/60 bg-rose-950/30 p-3 text-sm text-rose-200">
+          Invalid username or password.
+        </div>
+      {% endif %}
+
+      <form method="post" class="space-y-6">
+        {% csrf_token %}
+
+        <div>
+          <label class="mb-2 block text-sm font-medium text-slate-300">Username</label>
+          <input
+            type="text"
+            name="username"
+            value="{{ form.username.value|default:'' }}"
+            required
+            class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-2.5 text-slate-100 placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+          >
+        </div>
+
+        <div>
+          <label class="mb-2 block text-sm font-medium text-slate-300">Password</label>
+          <input
+            type="password"
+            name="password"
+            required
+            class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-2.5 text-slate-100 placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+          >
+        </div>
+
+        <button
+          type="submit"
+          class="w-full rounded-xl bg-indigo-600 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500"
+        >
+          Sign in
+        </button>
+      </form>
+
+      <p class="mt-6 text-center text-sm text-slate-400">
+        New here?
+        <a href="{% url 'signup' %}" class="font-medium text-indigo-300 hover:text-indigo-200">Create an account</a>
+      </p>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{
+  "name": "generic-saas",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "tailwind:build": "npx @tailwindcss/cli -i ./static/css/src/input.css -o ./static/css/dist/styles.css --minify",
+    "tailwind:watch": "npx @tailwindcss/cli -i ./static/css/src/input.css -o ./static/css/dist/styles.css --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.2.1",
+    "tailwindcss": "^4.2.1"
+  }
+}
