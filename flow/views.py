@@ -21,8 +21,6 @@ def _get_workspace(request):
 def flow_board(request):
     ws = _get_workspace(request)
 
-    # Keep your existing columns list if you already have it.
-    # Otherwise this matches the statuses in your rules.
     columns = [
         ("released", "Released"),
         ("bulk", "Bulk Pick"),
@@ -32,23 +30,43 @@ def flow_board(request):
         ("exception", "Exception"),
     ]
 
+    # Sort: by status, then priority (1 = highest), then most recently updated
     items = (
         WorkItem.objects.filter(workspace=ws)
         .select_related("assignee", "order")
-        .order_by("-updated_at")
+        .order_by("status", "priority", "-updated_at")
     )
 
     items_by_status = {k: [] for k, _ in columns}
+    ui_helpers = {}
+
     for item in items:
+        # bucket
         items_by_status.setdefault(item.status, []).append(item)
 
-    ui_helpers = {}
-    for item in items:
+        # ui helper
         allowed = ALLOWED_TRANSITIONS.get(item.status, [])
         ui_helpers[item.id] = {
             "next_status": allowed[0] if allowed else None,
-            "can_exception": item.status != "exception",
+            "can_exception": item.status not in ("exception", "shipped"),
         }
+
+    # WIP state per column (for badge colour)
+    wip_state = {}
+    for key, _ in columns:
+        limit = WIP_LIMITS.get(key)
+        count = len(items_by_status.get(key, []))
+
+        if not limit:
+            wip_state[key] = "none"
+        elif count > limit:
+            wip_state[key] = "over"
+        elif count == limit:
+            wip_state[key] = "at"
+        elif count == limit - 1:
+            wip_state[key] = "near"
+        else:
+            wip_state[key] = "ok"
 
     return render(
         request,
@@ -58,6 +76,7 @@ def flow_board(request):
             "items_by_status": items_by_status,
             "ui_helpers": ui_helpers,
             "wip_limits": WIP_LIMITS,
+            "wip_state": wip_state,
         },
     )
 
